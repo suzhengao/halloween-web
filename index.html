@@ -289,7 +289,7 @@
     50%      { opacity: .72; }
   }
 
-  /* ---------- 幽灵 ---------- */
+  /* ---------- 谢德（Shade） ---------- */
   #ghost {
     position: fixed;
     left: 0;
@@ -311,8 +311,8 @@
     width: 100%;
     height: auto;
     filter:
-      drop-shadow(0 0 14px rgba(158, 220, 255, .55))
-      drop-shadow(0 0 46px rgba(92, 158, 255, .26));
+      drop-shadow(0 0 12px rgba(176, 110, 255, .5))
+      drop-shadow(0 0 40px rgba(120, 70, 220, .26));
     animation: ghostBob 4.2s ease-in-out infinite;
   }
   @keyframes ghostBob {
@@ -335,20 +335,326 @@
     z-index: 7;
     border-radius: 50%;
     pointer-events: none;
-    background: radial-gradient(circle, rgba(176, 226, 255, .85) 0%, rgba(112, 172, 255, .28) 45%, rgba(90, 140, 255, 0) 72%);
+    background: radial-gradient(circle, rgba(196, 150, 255, .85) 0%, rgba(150, 100, 230, .28) 45%, rgba(120, 80, 200, 0) 72%);
     filter: blur(2px);
     will-change: transform;
     transform: translate3d(50vw, 60vh, 0) translate(-50%, -50%);
   }
 
+  /* ---------- 万圣节宝箱 ---------- */
+  #chest {
+    position: fixed;
+    left: clamp(14px, 4.5vw, 66px);
+    bottom: clamp(54px, 9vh, 98px);
+    z-index: 7;
+    width: clamp(94px, 11vw, 142px);
+    cursor: pointer;
+    pointer-events: auto;
+    outline: none;
+    -webkit-tap-highlight-color: transparent;
+    transition: transform .2s ease;
+  }
+  #chest:hover  { transform: translateY(-3px); }
+  #chest:active { transform: translateY(0) scale(.95); }
+  #chest:focus-visible {
+    outline: 2px solid rgba(200, 160, 255, .85);
+    outline-offset: 10px;
+    border-radius: 16px;
+  }
+  #chest svg {
+    display: block;
+    width: 100%;
+    height: auto;
+    filter:
+      drop-shadow(0 0 10px rgba(176, 110, 255, .5))
+      drop-shadow(0 0 28px rgba(120, 70, 220, .22));
+    animation: chestBob 3.4s ease-in-out infinite;
+    transition: filter .5s ease;
+  }
+  @keyframes chestBob {
+    0%, 100% { transform: translateY(0); }
+    50%      { transform: translateY(-5px); }
+  }
+
+  /* 已解锁：金橙色 + 紫色更强的光 */
+  #chest.is-open svg {
+    filter:
+      drop-shadow(0 0 14px rgba(255, 172, 64, .6))
+      drop-shadow(0 0 42px rgba(160, 100, 255, .42));
+  }
+  .chest-lid {
+    transform-box: view-box;
+    transform-origin: 22px 78px;
+    transition: transform .55s cubic-bezier(.34, 1.4, .5, 1);
+  }
+  #chest.is-open .chest-lid { transform: rotate(-38deg); }
+
+  .chest-treasure {
+    opacity: 0;
+    transform-box: view-box;
+    transform-origin: 80px 78px;
+    transform: translateY(8px) scale(.62);
+    transition: opacity .45s ease, transform .55s cubic-bezier(.34, 1.4, .5, 1);
+  }
+  #chest.is-open .chest-treasure {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    transition-delay: .12s;
+  }
+
+  .chest-tip {
+    position: absolute;
+    left: 50%;
+    top: 100%;
+    margin: 2px 0 0;
+    white-space: nowrap;
+    font-size: clamp(.56rem, 1.15vw, .72rem);
+    letter-spacing: .16em;
+    text-indent: .16em;
+    color: rgba(206, 178, 255, .5);
+    pointer-events: none;
+    animation: hintFade 4.4s ease-in-out infinite;
+  }
+  #chest.is-open .chest-tip { color: rgba(255, 202, 138, .68); }
+
+  /* ---------- 糖果特效层 ---------- */
+  #candy-layer {
+    position: fixed;
+    inset: 0;
+    z-index: 9;
+    pointer-events: none;
+    overflow: hidden;
+  }
+  .candy {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: var(--size, 24px);
+    height: var(--size, 24px);
+    opacity: 0;
+    will-change: transform, opacity;
+    animation: candyFly var(--dur, 2.8s) linear var(--delay, 0s) forwards;
+    filter:
+      drop-shadow(0 0 6px rgba(255, 150, 40, .45))
+      drop-shadow(0 0 12px rgba(160, 100, 255, .3));
+  }
+  .candy svg { display: block; width: 100%; height: 100%; }
+  @keyframes candyFly {
+    0% {
+      opacity: 0;
+      animation-timing-function: cubic-bezier(.14, .82, .36, 1);
+      transform: translate3d(var(--x, 0px), var(--y, 0px), 0) translate(-50%, -50%) rotate(0deg) scale(.35);
+    }
+    14% {
+      opacity: 1;
+      animation-timing-function: cubic-bezier(.4, .02, .82, .42);
+      transform: translate3d(calc(var(--x, 0px) + var(--bx, 0px) * .32), calc(var(--y, 0px) + var(--peak, -120px)), 0)
+                 translate(-50%, -50%) rotate(calc(var(--rot, 360deg) * .22)) scale(1.12);
+    }
+    80% {
+      opacity: 1;
+      animation-timing-function: cubic-bezier(.4, .02, .82, .42);
+    }
+    100% {
+      opacity: 0;
+      transform: translate3d(calc(var(--x, 0px) + var(--bx, 0px)), calc(var(--y, 0px) + var(--fall, 620px)), 0)
+                 translate(-50%, -50%) rotate(var(--rot, 360deg)) scale(.92);
+    }
+  }
+
+  /* ---------- 密码弹窗 ---------- */
+  .pw-mask {
+    position: fixed;
+    inset: 0;
+    z-index: 20;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background: rgba(6, 2, 14, .62);
+    -webkit-backdrop-filter: blur(6px);
+    backdrop-filter: blur(6px);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .28s ease;
+  }
+  .pw-mask.show { opacity: 1; pointer-events: auto; }
+
+  .pw-card {
+    position: relative;
+    width: min(92vw, 380px);
+    padding: 28px 26px 24px;
+    border-radius: 20px;
+    text-align: center;
+    background:
+      radial-gradient(120% 90% at 50% 0%, rgba(122, 74, 200, .38), transparent 62%),
+      linear-gradient(180deg, #1e1032 0%, #160b27 55%, #100818 100%);
+    border: 1px solid rgba(176, 130, 255, .3);
+    box-shadow:
+      0 24px 60px rgba(0, 0, 0, .6),
+      0 0 44px rgba(140, 90, 230, .28),
+      inset 0 1px 0 rgba(255, 255, 255, .07);
+    transform: translateY(16px) scale(.94);
+    transition: transform .32s cubic-bezier(.2, .9, .3, 1.25);
+  }
+  .pw-mask.show .pw-card { transform: translateY(0) scale(1); }
+  .pw-card.err { animation: pwShake .44s cubic-bezier(.36, .07, .19, .97); }
+  @keyframes pwShake {
+    10%, 90% { transform: translateX(-2px); }
+    20%, 80% { transform: translateX(4px); }
+    30%, 50%, 70% { transform: translateX(-7px); }
+    40%, 60% { transform: translateX(7px); }
+  }
+
+  .pw-close {
+    position: absolute;
+    top: 10px;
+    right: 12px;
+    width: 30px;
+    height: 30px;
+    padding: 0;
+    font-size: 20px;
+    line-height: 1;
+    color: rgba(214, 190, 255, .6);
+    background: transparent;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: color .25s, background .25s;
+  }
+  .pw-close:hover { color: #ffeacc; background: rgba(255, 255, 255, .08); }
+
+  .pw-icon {
+    width: 54px;
+    height: 54px;
+    margin: 0 auto 10px;
+    animation: pwPulse 2.8s ease-in-out infinite;
+  }
+  .pw-icon svg { display: block; width: 100%; height: 100%; }
+  @keyframes pwPulse {
+    0%, 100% { opacity: .8; transform: scale(1); }
+    50%      { opacity: 1;  transform: scale(1.06); }
+  }
+
+  .pw-title {
+    margin: 0;
+    font-size: clamp(1.02rem, 3.4vw, 1.3rem);
+    font-weight: 800;
+    letter-spacing: .06em;
+    background: linear-gradient(180deg, #fff6dd 0%, #ffd68a 45%, #ffa726 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 0 10px rgba(255, 150, 40, .35));
+  }
+  .pw-sub {
+    margin: 8px 0 0;
+    font-size: .72rem;
+    letter-spacing: .2em;
+    text-indent: .2em;
+    color: rgba(206, 182, 246, .5);
+  }
+  .pw-input {
+    width: 100%;
+    margin-top: 18px;
+    padding: 13px 14px;
+    font-family: inherit;
+    font-size: 1.45rem;
+    text-align: center;
+    letter-spacing: .5em;
+    text-indent: .5em;
+    color: #f6e8d2;
+    background: rgba(255, 255, 255, .05);
+    border: 1.5px solid rgba(176, 130, 255, .38);
+    border-radius: 12px;
+    outline: none;
+    transition: border-color .25s, box-shadow .25s, background .25s;
+  }
+  .pw-input::placeholder { color: rgba(230, 210, 255, .26); }
+  .pw-input:focus {
+    background: rgba(255, 255, 255, .08);
+    border-color: rgba(200, 160, 255, .75);
+    box-shadow: 0 0 0 4px rgba(140, 90, 230, .18), 0 0 18px rgba(150, 100, 255, .3);
+  }
+  .pw-msg {
+    min-height: 20px;
+    margin: 12px 0 0;
+    font-size: .8rem;
+    letter-spacing: .1em;
+    color: rgba(255, 138, 158, .92);
+    text-shadow: 0 0 12px rgba(255, 80, 110, .3);
+  }
+  .pw-msg.ok { color: rgba(150, 240, 190, .95); text-shadow: 0 0 12px rgba(80, 240, 160, .3); }
+
+  .pw-actions { display: flex; gap: 10px; margin-top: 16px; }
+  .pw-btn {
+    flex: 1;
+    padding: 12px 0;
+    font-family: inherit;
+    font-size: .92rem;
+    font-weight: 700;
+    letter-spacing: .14em;
+    text-indent: .14em;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: transform .18s, filter .25s, background .25s;
+  }
+  .pw-btn:active { transform: translateY(1px) scale(.985); }
+  .pw-btn.main {
+    color: #2a1005;
+    background: linear-gradient(180deg, #ffd27a 0%, #ff9a1e 55%, #ff6a00 100%);
+    box-shadow: 0 0 18px rgba(255, 140, 30, .35);
+  }
+  .pw-btn.main:hover { filter: brightness(1.08); }
+  .pw-btn.ghost {
+    color: rgba(226, 208, 250, .82);
+    background: rgba(255, 255, 255, .05);
+    border: 1px solid rgba(176, 130, 255, .32);
+  }
+  .pw-btn.ghost:hover { background: rgba(255, 255, 255, .1); }
+  .pw-btn:focus-visible { outline: 2px solid rgba(200, 160, 255, .85); outline-offset: 3px; }
+
+  /* ---------- 吐司提示 ---------- */
+  #toast {
+    position: fixed;
+    left: 50%;
+    bottom: clamp(70px, 13vh, 130px);
+    z-index: 22;
+    padding: 10px 22px;
+    border-radius: 999px;
+    font-size: clamp(.66rem, 1.4vw, .8rem);
+    letter-spacing: .14em;
+    text-indent: .14em;
+    white-space: nowrap;
+    color: #ffeacc;
+    background: linear-gradient(180deg, rgba(72, 38, 116, .94), rgba(38, 18, 64, .94));
+    border: 1px solid rgba(190, 150, 255, .35);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, .5), 0 0 26px rgba(150, 100, 255, .3);
+    transform: translate(-50%, 12px);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .3s ease, transform .3s ease;
+  }
+  #toast.show { opacity: 1; transform: translate(-50%, 0); }
+
   @media (max-width: 560px) {
     .title { font-size: clamp(2.4rem, 16vw, 4.6rem); letter-spacing: .04em; }
     .fog { filter: blur(28px); }
     .moon-wrap { top: 5vh; right: 8vw; }
+    #chest {
+      width: clamp(78px, 24vw, 108px);
+      left: clamp(10px, 5vw, 30px);
+      bottom: clamp(50px, 10vh, 80px);
+    }
+    .pw-card { padding: 24px 20px 20px; }
   }
 
   @media (prefers-reduced-motion: reduce) {
     .fog, .moon-halo, .sub, .hint, .ghost-eye { animation: none !important; }
+    #chest svg, .chest-tip, .pw-icon { animation: none !important; }
+    .pw-mask, .pw-card, #chest { transition-duration: .01ms; }
   }
 </style>
 </head>
@@ -378,27 +684,179 @@
     <p class="sub">Happy Halloween</p>
   </main>
 
-  <p class="hint">移动鼠标 · 幽灵会跟着你</p>
+  <p class="hint">移动鼠标 · 谢德会跟着你</p>
 
   <div id="ghost" aria-hidden="true">
-    <svg viewBox="0 0 112 150" xmlns="http://www.w3.org/2000/svg">
+    <svg viewBox="0 0 120 160" xmlns="http://www.w3.org/2000/svg">
       <defs>
-        <linearGradient id="ghostBody" x1="56" y1="10" x2="56" y2="140" gradientUnits="userSpaceOnUse">
-          <stop offset="0" stop-color="#f4fbff" stop-opacity=".96" />
-          <stop offset=".52" stop-color="#d6ecff" stop-opacity=".8" />
-          <stop offset="1" stop-color="#8fc0ff" stop-opacity=".34" />
+        <linearGradient id="cloakGrad" x1="60" y1="10" x2="60" y2="150" gradientUnits="userSpaceOnUse">
+          <stop offset="0" stop-color="#2a1a3e" />
+          <stop offset=".5" stop-color="#150c26" />
+          <stop offset="1" stop-color="#070410" />
         </linearGradient>
+        <radialGradient id="hoodInner" cx="60" cy="56" r="40" gradientUnits="userSpaceOnUse">
+          <stop offset="0" stop-color="#1d1130" />
+          <stop offset="1" stop-color="#050209" />
+        </radialGradient>
+        <radialGradient id="auraGrad" cx="60" cy="56" r="42" gradientUnits="userSpaceOnUse">
+          <stop offset="0" stop-color="rgba(168,110,255,.55)" />
+          <stop offset=".55" stop-color="rgba(128,76,224,.22)" />
+          <stop offset="1" stop-color="rgba(120,70,210,0)" />
+        </radialGradient>
+        <linearGradient id="maskGrad" x1="60" y1="28" x2="60" y2="88" gradientUnits="userSpaceOnUse">
+          <stop offset="0" stop-color="#ffffff" />
+          <stop offset=".7" stop-color="#efe9f6" />
+          <stop offset="1" stop-color="#cdc3e2" />
+        </linearGradient>
+        <radialGradient id="maskHi" cx="50" cy="46" r="20" gradientUnits="userSpaceOnUse">
+          <stop offset="0" stop-color="rgba(255,255,255,.9)" />
+          <stop offset="1" stop-color="rgba(255,255,255,0)" />
+        </radialGradient>
       </defs>
-      <path d="M56 12C30 12 16 34 16 64V122q8 8 16 0 8 8 16 0 8 8 16 0 8 8 16 0 8 8 16 0V64C96 34 82 12 56 12Z"
-            fill="url(#ghostBody)" />
-      <ellipse class="ghost-eye" cx="42" cy="63" rx="4.6" ry="6.6" fill="#1c2b4a" opacity=".85" />
-      <ellipse class="ghost-eye" cx="70" cy="63" rx="4.6" ry="6.6" fill="#1c2b4a" opacity=".85" />
-      <path d="M48 82q8 7 16 0" fill="none" stroke="#1c2b4a" stroke-opacity=".55"
-            stroke-width="2.6" stroke-linecap="round" />
-      <ellipse cx="32" cy="74" rx="5" ry="3" fill="#9fd0ff" opacity=".28" />
-      <ellipse cx="80" cy="74" rx="5" ry="3" fill="#9fd0ff" opacity=".28" />
+
+      <!-- 黑色斗篷 -->
+      <path d="M60 14 C39 14 25 33 24 58 C23 80 22 108 24 130 Q31 137 38 129 Q45 137 52 129 Q59 137 66 129 Q73 137 80 129 Q87 137 94 129 Q101 135 96 116 C95 86 94 58 92 46 C88 26 79 14 60 14 Z"
+            fill="url(#cloakGrad)" />
+      <!-- 帽兜内阴影 -->
+      <ellipse cx="60" cy="54" rx="30" ry="37" fill="url(#hoodInner)" />
+      <!-- 紫色微光 -->
+      <ellipse cx="60" cy="56" rx="34" ry="40" fill="url(#auraGrad)" />
+
+      <!-- 白色面具 -->
+      <path d="M60 30 C76 30 83 44 83 58 C83 75 72 86 60 86 C48 86 37 75 37 58 C37 44 44 30 60 30 Z"
+            fill="url(#maskGrad)" />
+      <ellipse cx="51" cy="45" rx="15" ry="19" fill="url(#maskHi)" opacity=".7" />
+
+      <!-- 眼睛（保留原有的眨眼动画） -->
+      <g class="ghost-eye">
+        <path d="M44 52 Q51 47 58 53 Q51 58 44 52 Z" fill="#140a22" />
+        <path d="M76 52 Q69 47 62 53 Q69 58 76 52 Z" fill="#140a22" />
+      </g>
+
+      <!-- 紫色微光点缀 -->
+      <circle cx="40" cy="132" r="2.2" fill="#b07bff" opacity=".5" />
+      <circle cx="62" cy="136" r="2.6" fill="#c79bff" opacity=".45" />
+      <circle cx="82" cy="130" r="2" fill="#b07bff" opacity=".5" />
     </svg>
   </div>
+
+  <!-- 糖果特效层 -->
+  <div id="candy-layer" aria-hidden="true"></div>
+
+  <!-- 万圣节宝箱 -->
+  <div id="chest" role="button" tabindex="0" aria-label="万圣节宝箱，点击输入密码解锁">
+    <svg viewBox="0 0 160 150" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="chestBodyGrad" x1="80" y1="76" x2="80" y2="128" gradientUnits="userSpaceOnUse">
+          <stop offset="0" stop-color="#4a2c6e" />
+          <stop offset=".55" stop-color="#331d4e" />
+          <stop offset="1" stop-color="#1c0f2e" />
+        </linearGradient>
+        <linearGradient id="chestLidGrad" x1="80" y1="34" x2="80" y2="78" gradientUnits="userSpaceOnUse">
+          <stop offset="0" stop-color="#6a44a0" />
+          <stop offset=".55" stop-color="#4b2c74" />
+          <stop offset="1" stop-color="#2e1a49" />
+        </linearGradient>
+        <linearGradient id="chestTrimGrad" x1="22" y1="0" x2="138" y2="0" gradientUnits="userSpaceOnUse">
+          <stop offset="0" stop-color="#8a5a1c" />
+          <stop offset=".28" stop-color="#ffd27a" />
+          <stop offset=".62" stop-color="#d78b23" />
+          <stop offset="1" stop-color="#7d4d16" />
+        </linearGradient>
+        <radialGradient id="chestGlow" cx="80" cy="74" r="52" gradientUnits="userSpaceOnUse">
+          <stop offset="0" stop-color="rgba(255,196,96,.9)" />
+          <stop offset=".5" stop-color="rgba(190,120,255,.42)" />
+          <stop offset="1" stop-color="rgba(150,90,230,0)" />
+        </radialGradient>
+        <clipPath id="chestLidClip">
+          <path d="M22 78 C22 46 46 34 80 34 C114 34 138 46 138 78 Z" />
+        </clipPath>
+      </defs>
+
+      <!-- 地面光 -->
+      <ellipse cx="80" cy="132" rx="60" ry="10" fill="rgba(150,100,235,.22)" />
+
+      <!-- 箱口内部 -->
+      <ellipse cx="80" cy="78" rx="58" ry="11" fill="#0a0412" />
+
+      <!-- 箱内宝光与糖果（解锁后显现） -->
+      <g class="chest-treasure">
+        <ellipse cx="80" cy="72" rx="54" ry="30" fill="url(#chestGlow)" />
+        <circle cx="58" cy="68" r="7" fill="#ff9a1e" />
+        <circle cx="80" cy="61" r="8.4" fill="#c07bff" />
+        <circle cx="102" cy="68" r="6.6" fill="#ffd27a" />
+        <circle cx="68" cy="77" r="5.4" fill="#ff5e6e" />
+        <circle cx="93" cy="77" r="6.2" fill="#8b5cf6" />
+        <circle cx="80" cy="74" r="4.4" fill="#fff2cf" />
+      </g>
+
+      <!-- 箱盖 -->
+      <g class="chest-lid">
+        <path d="M22 78 C22 46 46 34 80 34 C114 34 138 46 138 78 Z" fill="url(#chestLidGrad)" />
+        <g clip-path="url(#chestLidClip)">
+          <rect x="36" y="30" width="9" height="52" fill="rgba(255,205,130,.14)" />
+          <rect x="115" y="30" width="9" height="52" fill="rgba(255,205,130,.14)" />
+          <ellipse cx="80" cy="41" rx="34" ry="9" fill="rgba(255,255,255,.07)" />
+        </g>
+        <rect x="22" y="71" width="116" height="8" rx="4" fill="url(#chestTrimGrad)" opacity=".95" />
+      </g>
+
+      <!-- 箱体正面 -->
+      <rect x="22" y="78" width="116" height="48" rx="7" fill="url(#chestBodyGrad)" />
+      <rect x="36" y="79" width="9" height="46" fill="rgba(255,205,130,.13)" />
+      <rect x="115" y="79" width="9" height="46" fill="rgba(255,205,130,.13)" />
+      <rect x="22" y="78" width="116" height="7" rx="3.5" fill="url(#chestTrimGrad)" opacity=".9" />
+      <rect x="22" y="119" width="116" height="7" rx="3.5" fill="url(#chestTrimGrad)" opacity=".8" />
+
+      <!-- 锁扣 -->
+      <g class="chest-lock">
+        <rect x="69" y="72" width="22" height="26" rx="5" fill="url(#chestTrimGrad)" />
+        <rect x="72" y="75" width="16" height="20" rx="3" fill="rgba(40,18,60,.55)" />
+        <circle cx="80" cy="83" r="3.6" fill="#1a0a24" />
+        <path d="M80 84.5v6.5" stroke="#1a0a24" stroke-width="2.6" stroke-linecap="round" />
+      </g>
+    </svg>
+    <p class="chest-tip" id="chestTip">点击宝箱</p>
+  </div>
+
+  <!-- 密码弹窗 -->
+  <div class="pw-mask" id="pwMask" aria-hidden="true">
+    <div class="pw-card" id="pwCard" role="dialog" aria-modal="true" aria-labelledby="pwTitle">
+      <button class="pw-close" id="pwClose" type="button" aria-label="关闭">&times;</button>
+
+      <div class="pw-icon" aria-hidden="true">
+        <svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="pwLockGrad" x1="24" y1="18" x2="24" y2="42" gradientUnits="userSpaceOnUse">
+              <stop offset="0" stop-color="#d7bcff" />
+              <stop offset=".5" stop-color="#a06cf5" />
+              <stop offset="1" stop-color="#5b31a8" />
+            </linearGradient>
+          </defs>
+          <path d="M15.5 22v-6.5a8.5 8.5 0 0 1 17 0V22" fill="none" stroke="#c9a7ff"
+                stroke-width="3.2" stroke-linecap="round" />
+          <rect x="10" y="22" width="28" height="21" rx="6" fill="url(#pwLockGrad)" />
+          <circle cx="24" cy="31" r="3.4" fill="#20103a" />
+          <path d="M24 33.2v4.6" stroke="#20103a" stroke-width="2.8" stroke-linecap="round" />
+        </svg>
+      </div>
+
+      <h2 class="pw-title" id="pwTitle">请输入解锁密码</h2>
+      <p class="pw-sub">Trick or Treat &middot; 输入密码开启宝箱</p>
+
+      <input class="pw-input" id="pwInput" type="password" inputmode="numeric"
+             maxlength="4" autocomplete="off" placeholder="····" aria-label="解锁密码" />
+
+      <p class="pw-msg" id="pwMsg" role="status"></p>
+
+      <div class="pw-actions">
+        <button class="pw-btn ghost" id="pwCancel" type="button">取消</button>
+        <button class="pw-btn main" id="pwOk" type="button">解锁</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast" role="status" aria-live="polite"></div>
 
 <script>
 (function () {
@@ -471,7 +929,7 @@
     }
   })();
 
-  /* ================= 幽灵 ================= */
+  /* ================= 谢德（Shade） ================= */
   var ghostEl = document.getElementById('ghost');
   var ghost = { x: W / 2, y: H * 0.6 };
   var pointer = { x: W / 2, y: H * 0.6, last: -99 };
@@ -719,6 +1177,201 @@
   requestAnimationFrame(function (now) {
     last = now;
     frame(now);
+  });
+})();
+</script>
+
+<script>
+/* ================= 宝箱 · 密码解锁 · 糖果特效 ================= */
+(function () {
+  'use strict';
+
+  var PASSWORD = '1031';
+  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var rand = function (a, b) { return a + Math.random() * (b - a); };
+
+  var chest    = document.getElementById('chest');
+  var chestTip = document.getElementById('chestTip');
+  var layer    = document.getElementById('candy-layer');
+  var mask     = document.getElementById('pwMask');
+  var card     = document.getElementById('pwCard');
+  var input    = document.getElementById('pwInput');
+  var msg      = document.getElementById('pwMsg');
+  var toastEl  = document.getElementById('toast');
+
+  var unlocked = false;
+  var lastFocus = null;
+  var toastTimer = null;
+
+  /* ---------------- 吐司提示 ---------------- */
+  function toast(text) {
+    toastEl.textContent = text;
+    toastEl.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () {
+      toastEl.classList.remove('show');
+    }, 2800);
+  }
+
+  /* ---------------- 密码弹窗 ---------------- */
+  function openModal() {
+    if (unlocked || mask.classList.contains('show')) return;
+    lastFocus = document.activeElement;
+    input.value = '';
+    msg.textContent = '';
+    msg.className = 'pw-msg';
+    card.classList.remove('err');
+    mask.classList.add('show');
+    mask.setAttribute('aria-hidden', 'false');
+    setTimeout(function () {
+      try { input.focus(); } catch (e) {}
+    }, 120);
+  }
+
+  function closeModal() {
+    mask.classList.remove('show');
+    mask.setAttribute('aria-hidden', 'true');
+    try { input.blur(); } catch (e) {}
+    if (lastFocus && lastFocus.focus) {
+      try { lastFocus.focus(); } catch (e) {}
+    }
+  }
+
+  function wrongPassword() {
+    msg.textContent = '密码不对';
+    msg.className = 'pw-msg';
+    card.classList.remove('err');
+    void card.offsetWidth;          /* 强制回流，重播抖动动画 */
+    card.classList.add('err');
+    try { input.select(); } catch (e) {}
+  }
+
+  function unlockSuccess() {
+    unlocked = true;
+    chest.classList.add('is-open');
+    chest.setAttribute('aria-label', '宝箱已解锁，点击获得糖果');
+    chestTip.textContent = '再点一次 · 抢糖果';
+    msg.className = 'pw-msg ok';
+    input.value = '';
+    closeModal();
+    toast('解锁成功 · 再点一次试试');
+  }
+
+  function submitPassword() {
+    if (input.value === PASSWORD) unlockSuccess();
+    else wrongPassword();
+  }
+
+  document.getElementById('pwOk').addEventListener('click', submitPassword);
+  document.getElementById('pwCancel').addEventListener('click', closeModal);
+  document.getElementById('pwClose').addEventListener('click', closeModal);
+  mask.addEventListener('click', function (e) {
+    if (e.target === mask) closeModal();
+  });
+
+  input.addEventListener('input', function () {
+    input.value = input.value.replace(/\D/g, '').slice(0, 4);
+    if (msg.textContent) msg.textContent = '';
+  });
+  input.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter') { e.preventDefault(); submitPassword(); }
+  });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && mask.classList.contains('show')) closeModal();
+  });
+
+  /* ---------------- 糖果特效 ---------------- */
+  var CANDY_COLORS = ['#ff8a1e', '#ffb64d', '#c07bff', '#8b5cf6', '#ff5e6e', '#5ad6a0'];
+  var CANDY_TYPES = [
+    /* 包装糖 */
+    '<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">' +
+      '<path d="M1 12 L7.6 7.4 L7.6 16.6 Z" fill="COLOR2"/>' +
+      '<path d="M23 12 L16.4 7.4 L16.4 16.6 Z" fill="COLOR2"/>' +
+      '<circle cx="12" cy="12" r="7.6" fill="COLOR"/>' +
+      '<ellipse cx="9.6" cy="9.2" rx="2.3" ry="1.5" fill="rgba(255,255,255,.5)" transform="rotate(-30 9.6 9.2)"/>' +
+      '<path d="M6 15.5 Q10 14.5 12.5 16" fill="none" stroke="rgba(255,255,255,.4)" stroke-width="1.4" stroke-linecap="round"/>' +
+    '</svg>',
+    /* 棒棒糖 */
+    '<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">' +
+      '<rect x="10.8" y="12" width="2.4" height="11.6" rx="1.2" fill="#efe6ff" opacity=".8"/>' +
+      '<circle cx="12" cy="9.6" r="7.8" fill="COLOR"/>' +
+      '<path d="M12 3.6 A6 6 0 1 1 5.6 12.6 A3.8 3.8 0 1 1 12 7.4 A1.8 1.8 0 0 1 12 11" fill="none" ' +
+        'stroke="rgba(255,255,255,.65)" stroke-width="1.5" stroke-linecap="round"/>' +
+    '</svg>',
+    /* 软糖 */
+    '<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">' +
+      '<path d="M12 2.5 C16.6 9 19 12 19 15 A7 7 0 0 1 5 15 C5 12 7.4 9 12 2.5 Z" fill="COLOR"/>' +
+      '<ellipse cx="9.4" cy="12.5" rx="1.6" ry="2.6" fill="rgba(255,255,255,.45)" transform="rotate(-20 9.4 12.5)"/>' +
+      '<path d="M6.6 16.6 Q12 19.6 17.4 16.6" fill="none" stroke="rgba(255,255,255,.3)" stroke-width="1.3"/>' +
+    '</svg>',
+    /* 星星糖 */
+    '<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">' +
+      '<path d="M12 1.6 L14.9 8.5 L22.2 9 L16.7 13.6 L18.5 20.6 L12 16.7 L5.5 20.6 L7.3 13.6 L1.8 9 L9.1 8.5 Z" fill="COLOR"/>' +
+      '<circle cx="12" cy="11.6" r="2.4" fill="rgba(255,255,255,.45)"/>' +
+    '</svg>'
+  ];
+
+  function candySvg(color, color2) {
+    return CANDY_TYPES[Math.floor(Math.random() * CANDY_TYPES.length)]
+      .replace(/COLOR2/g, color2)
+      .replace(/COLOR/g, color);
+  }
+
+  function spawnCandy(ox, oy, H) {
+    var el = document.createElement('div');
+    el.className = 'candy';
+
+    var y = oy + rand(-10, 10);
+    var color = CANDY_COLORS[Math.floor(Math.random() * CANDY_COLORS.length)];
+    var color2 = CANDY_COLORS[Math.floor(Math.random() * CANDY_COLORS.length)];
+    var dur = rand(2.1, 3.5);
+    var delay = rand(0, 0.5);
+
+    el.style.setProperty('--size', rand(16, 34).toFixed(1) + 'px');
+    el.style.setProperty('--x', (ox + rand(-14, 14)).toFixed(1) + 'px');
+    el.style.setProperty('--y', y.toFixed(1) + 'px');
+    el.style.setProperty('--bx', (rand(-1, 1) * rand(50, 240)).toFixed(1) + 'px');
+    el.style.setProperty('--peak', (-rand(70, 190)).toFixed(1) + 'px');
+    el.style.setProperty('--fall', Math.max(340, H + 150 - y).toFixed(1) + 'px');
+    el.style.setProperty('--rot', rand(-540, 540).toFixed(0) + 'deg');
+    el.style.setProperty('--dur', dur.toFixed(2) + 's');
+    el.style.setProperty('--delay', delay.toFixed(2) + 's');
+
+    el.innerHTML = candySvg(color, color2);
+
+    el.addEventListener('animationend', function remove() {
+      if (el.parentNode) el.parentNode.removeChild(el);
+    });
+    /* 兜底清理，避免个别浏览器不触发 animationend */
+    setTimeout(function () {
+      if (el.parentNode) el.parentNode.removeChild(el);
+    }, (dur + delay + 0.6) * 1000);
+
+    layer.appendChild(el);
+  }
+
+  function burstCandy() {
+    if (layer.childElementCount > 220) return;   /* 防止堆积过多 */
+    var r = chest.getBoundingClientRect();
+    var ox = r.left + r.width / 2;
+    var oy = r.top + r.height * 0.35;
+    var H = window.innerHeight;
+    var n = reduceMotion ? 14 : 28;
+    for (var i = 0; i < n; i++) spawnCandy(ox, oy, H);
+  }
+
+  /* ---------------- 宝箱交互 ---------------- */
+  function activateChest() {
+    if (!unlocked) openModal();
+    else burstCandy();
+  }
+
+  chest.addEventListener('click', activateChest);
+  chest.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter' || e.key === ' ' || e.key === 'Spacebar') {
+      e.preventDefault();
+      activateChest();
+    }
   });
 })();
 </script>
